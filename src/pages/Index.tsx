@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { products } from "@/data/products";
 import { ProductCard } from "@/components/ProductCard";
+import { getWhatsAppUrl } from "@/lib/whatsapp";
 
 const Index = () => {
   const { theme, setTheme } = useTheme();
