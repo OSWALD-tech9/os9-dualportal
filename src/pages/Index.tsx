@@ -4,13 +4,14 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { products } from "@/data/products";
 import { ProductCard } from "@/components/ProductCard";
+import { getWhatsAppUrl } from "@/lib/whatsapp";
 
 const Index = () => {
   const { theme, setTheme } = useTheme();
   const featured = products.filter((p) => p.featured).slice(0, 3);
 
   return (
-    <div className="min-h-screen pt-16">
+    <div className="min-h-screen pt-[calc(1.75rem+4rem)]">
       {/* Hero */}
       <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
         {/* Background effects */}
@@ -54,13 +55,11 @@ const Index = () => {
                   Enter the {theme === "wave" ? "Grid" : "Village"}
                 </Button>
               </Link>
-              <Button
-                variant="heroOutline"
-                size="lg"
-                onClick={() => setTheme(theme === "wave" ? "roots" : "wave")}
-              >
-                Switch to {theme === "wave" ? "The Roots" : "The Wave"}
-              </Button>
+              <a href={getWhatsAppUrl("Hello OS9 Hub! I'd like to inquire about your products.")} target="_blank" rel="noopener noreferrer">
+                <Button variant="heroOutline" size="lg">
+                  {theme === "wave" ? "Contact HQ" : "Inquire Now"}
+                </Button>
+              </a>
             </div>
           </motion.div>
         </div>

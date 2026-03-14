@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 import { useState } from "react";
+import { getWhatsAppUrl } from "@/lib/whatsapp";
 
 const Pricing = () => {
   const { theme } = useTheme();
@@ -36,7 +37,7 @@ const Pricing = () => {
   ];
 
   return (
-    <div className="min-h-screen pt-24 pb-16">
+    <div className="min-h-screen pt-[calc(1.75rem+6rem)] pb-16">
       <div className="container px-4">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center">
           <h1 className="font-display text-4xl md:text-5xl font-black text-foreground text-glow">
@@ -101,12 +102,14 @@ const Pricing = () => {
                   </li>
                 ))}
               </ul>
-              <Button
-                variant={plan.featured ? "hero" : "heroOutline"}
-                className="mt-6 w-full"
-              >
-                {plan.cta}
-              </Button>
+              <a href={getWhatsAppUrl(`Hi! I'm interested in the ${plan.name} plan (${currency === "usd" ? `$${plan.price_usd}` : `${plan.price_xaf.toLocaleString()} XAF`}/mo)`)} target="_blank" rel="noopener noreferrer">
+                <Button
+                  variant={plan.featured ? "hero" : "heroOutline"}
+                  className="mt-6 w-full"
+                >
+                  {plan.cta}
+                </Button>
+              </a>
             </motion.div>
           ))}
         </div>

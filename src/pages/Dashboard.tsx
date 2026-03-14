@@ -43,7 +43,7 @@ const Dashboard = () => {
       : "bg-muted border-border";
 
   return (
-    <div className="min-h-screen pt-24 pb-16">
+    <div className="min-h-screen pt-[calc(1.75rem+6rem)] pb-16">
       <div className="container px-4 max-w-3xl">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
           <div className="flex items-center gap-3 mb-2">

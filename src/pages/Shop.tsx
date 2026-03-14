@@ -19,7 +19,7 @@ const Shop = () => {
   ];
 
   return (
-    <div className="min-h-screen pt-24 pb-16">
+    <div className="min-h-screen pt-[calc(1.75rem+6rem)] pb-16">
       <div className="container px-4">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
           <h1 className="font-display text-4xl md:text-5xl font-black text-foreground text-glow text-center">

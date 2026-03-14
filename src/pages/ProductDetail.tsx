@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { products } from "@/data/products";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ShoppingCart } from "lucide-react";
+import { getWhatsAppUrl } from "@/lib/whatsapp";
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -26,7 +27,7 @@ const ProductDetail = () => {
   const image = theme === "wave" ? product.image_wave : product.image_roots;
 
   return (
-    <div className="min-h-screen pt-24 pb-16">
+    <div className="min-h-screen pt-[calc(1.75rem+6rem)] pb-16">
       <div className="container px-4">
         <Link
           to="/shop"
@@ -85,10 +86,12 @@ const ProductDetail = () => {
                 </span>
               </div>
               <div className="mt-4 flex gap-3">
-                <Button variant="hero" size="lg" className="flex-1 gap-2">
-                  <ShoppingCart size={18} />
-                  {theme === "wave" ? "Acquire" : "Add to Basket"}
-                </Button>
+                <a href={getWhatsAppUrl(`Hi! I'd like to buy: ${product.name} ($${product.price_usd} / ${product.price_xaf.toLocaleString()} XAF)`)} target="_blank" rel="noopener noreferrer" className="flex-1">
+                  <Button variant="hero" size="lg" className="w-full gap-2">
+                    <ShoppingCart size={18} />
+                    {theme === "wave" ? "Buy Now" : "Purchase"}
+                  </Button>
+                </a>
               </div>
             </div>
 
