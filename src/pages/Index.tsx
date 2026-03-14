@@ -11,7 +11,7 @@ const Index = () => {
   const featured = products.filter((p) => p.featured).slice(0, 3);
 
   return (
-    <div className="min-h-screen pt-16">
+    <div className="min-h-screen pt-[calc(1.75rem+4rem)]">
       {/* Hero */}
       <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
         {/* Background effects */}
