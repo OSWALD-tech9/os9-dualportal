@@ -55,13 +55,11 @@ const Index = () => {
                   Enter the {theme === "wave" ? "Grid" : "Village"}
                 </Button>
               </Link>
-              <Button
-                variant="heroOutline"
-                size="lg"
-                onClick={() => setTheme(theme === "wave" ? "roots" : "wave")}
-              >
-                Switch to {theme === "wave" ? "The Roots" : "The Wave"}
-              </Button>
+              <a href={getWhatsAppUrl("Hello OS9 Hub! I'd like to inquire about your products.")} target="_blank" rel="noopener noreferrer">
+                <Button variant="heroOutline" size="lg">
+                  {theme === "wave" ? "Contact HQ" : "Inquire Now"}
+                </Button>
+              </a>
             </div>
           </motion.div>
         </div>

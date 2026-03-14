@@ -86,10 +86,12 @@ const ProductDetail = () => {
                 </span>
               </div>
               <div className="mt-4 flex gap-3">
-                <Button variant="hero" size="lg" className="flex-1 gap-2">
-                  <ShoppingCart size={18} />
-                  {theme === "wave" ? "Acquire" : "Add to Basket"}
-                </Button>
+                <a href={getWhatsAppUrl(`Hi! I'd like to buy: ${product.name} ($${product.price_usd} / ${product.price_xaf.toLocaleString()} XAF)`)} target="_blank" rel="noopener noreferrer" className="flex-1">
+                  <Button variant="hero" size="lg" className="w-full gap-2">
+                    <ShoppingCart size={18} />
+                    {theme === "wave" ? "Buy Now" : "Purchase"}
+                  </Button>
+                </a>
               </div>
             </div>
 

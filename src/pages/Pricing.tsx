@@ -102,12 +102,14 @@ const Pricing = () => {
                   </li>
                 ))}
               </ul>
-              <Button
-                variant={plan.featured ? "hero" : "heroOutline"}
-                className="mt-6 w-full"
-              >
-                {plan.cta}
-              </Button>
+              <a href={getWhatsAppUrl(`Hi! I'm interested in the ${plan.name} plan (${currency === "usd" ? `$${plan.price_usd}` : `${plan.price_xaf.toLocaleString()} XAF`}/mo)`)} target="_blank" rel="noopener noreferrer">
+                <Button
+                  variant={plan.featured ? "hero" : "heroOutline"}
+                  className="mt-6 w-full"
+                >
+                  {plan.cta}
+                </Button>
+              </a>
             </motion.div>
           ))}
         </div>
