@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { products } from "@/data/products";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ShoppingCart } from "lucide-react";
+import { getWhatsAppUrl } from "@/lib/whatsapp";
 
 const ProductDetail = () => {
   const { id } = useParams();
