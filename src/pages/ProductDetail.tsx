@@ -27,7 +27,7 @@ const ProductDetail = () => {
   const image = theme === "wave" ? product.image_wave : product.image_roots;
 
   return (
-    <div className="min-h-screen pt-24 pb-16">
+    <div className="min-h-screen pt-[calc(1.75rem+6rem)] pb-16">
       <div className="container px-4">
         <Link
           to="/shop"
