@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 import { useState } from "react";
+import { getWhatsAppUrl } from "@/lib/whatsapp";
 
 const Pricing = () => {
   const { theme } = useTheme();
