@@ -1,12 +1,16 @@
 import { Link, useLocation } from "react-router-dom";
 import { useTheme } from "@/contexts/ThemeContext";
 import { motion } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ChevronDown } from "lucide-react";
 import { useState } from "react";
 
 const navLinks = [
   { to: "/", label: "Home" },
   { to: "/shop", label: "Shop" },
+  { to: "/services", label: "Services" },
+  { to: "/automotive", label: "Automotive" },
+  { to: "/dance", label: "Dance Studio" },
+  { to: "/careers", label: "Careers" },
   { to: "/pricing", label: "Pricing" },
 ];
 
