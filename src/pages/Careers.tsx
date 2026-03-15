@@ -2,33 +2,16 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { getWhatsAppUrl } from "@/lib/whatsapp";
+import { SponsorshipFooter } from "@/components/SponsorshipFooter";
 import { Briefcase, Users, GraduationCap } from "lucide-react";
 
 const openings = [
-  {
-    type: "internship",
-    title: "Software Development Intern",
-    desc: "3-6 month internship in full-stack development. React, Node.js, Supabase.",
-    location: "Buea / Remote",
-  },
-  {
-    type: "internship",
-    title: "Graphic Design Intern",
-    desc: "Work on real client projects — branding, social media, and print.",
-    location: "Douala",
-  },
-  {
-    type: "freelance",
-    title: "Freelance Videographer",
-    desc: "Project-based cinematography and editing for events and commercials.",
-    location: "Cameroon-wide",
-  },
-  {
-    type: "partnership",
-    title: "Strategic Partner — Dance Events",
-    desc: "Collaborate on large-scale dance events, competitions, and workshops.",
-    location: "Pan-African",
-  },
+  { type: "internship", title: "Software Development Intern", desc: "3-6 month internship in full-stack development. React, Node.js, Supabase.", location: "Buea / Remote" },
+  { type: "internship", title: "Graphic Design Intern", desc: "Work on real client projects — branding, social media, and print.", location: "Douala" },
+  { type: "freelance", title: "Freelance Videographer", desc: "Project-based cinematography and editing for events and commercials.", location: "Cameroon-wide" },
+  { type: "partnership", title: "Strategic Partner — Dance Events", desc: "Collaborate on large-scale dance events, competitions, and workshops.", location: "Pan-African" },
+  { type: "internship", title: "Automotive Sales Intern", desc: "Learn vehicle sales, customer relations, and fleet management.", location: "Douala / Buea" },
+  { type: "freelance", title: "Freelance Web Developer", desc: "Build client websites, landing pages, and e-commerce solutions.", location: "Remote" },
 ];
 
 const typeConfig = {
@@ -41,7 +24,7 @@ const Careers = () => {
   const { theme } = useTheme();
 
   return (
-    <div className="min-h-screen pt-[calc(1.75rem+6rem)] pb-16">
+    <div className="min-h-screen pt-[calc(1.75rem+6rem)]">
       <div className="container px-4 max-w-3xl">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center">
           <h1 className="font-display text-4xl md:text-5xl font-black text-foreground text-glow">
@@ -60,7 +43,7 @@ const Careers = () => {
                 key={o.title}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.1 }}
+                transition={{ delay: i * 0.08 }}
                 className="p-5 rounded-lg border border-border bg-card hover:box-glow hover:border-glow transition-all"
               >
                 <div className="flex items-center gap-2 mb-1">
@@ -80,6 +63,8 @@ const Careers = () => {
           })}
         </div>
       </div>
+
+      <SponsorshipFooter />
     </div>
   );
 };
