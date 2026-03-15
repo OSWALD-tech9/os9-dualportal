@@ -1,58 +1,121 @@
+import { useState } from "react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { getWhatsAppUrl } from "@/lib/whatsapp";
 import { EventTicker } from "@/components/EventTicker";
-import { Car, Key } from "lucide-react";
+import { SponsorshipFooter } from "@/components/SponsorshipFooter";
+import { VehicleGallery } from "@/components/VehicleGallery";
+import { vehicles, type Vehicle } from "@/data/vehicles";
+import { Car, Key, Eye } from "lucide-react";
 
-const vehicles = [
-  { id: "v1", name: "Toyota Corolla 2022", type: "sale", price_xaf: 12000000, price_usd: 19200, desc: "Clean title, low mileage, fully serviced" },
-  { id: "v2", name: "Mercedes C-Class 2020", type: "sale", price_xaf: 18500000, price_usd: 29600, desc: "Luxury sedan, leather interior, sunroof" },
-  { id: "v3", name: "Toyota Hilux 4x4", type: "rental", price_xaf: 75000, price_usd: 120, desc: "Daily rental — perfect for rough terrain" },
-  { id: "v4", name: "Honda Civic 2023", type: "rental", price_xaf: 50000, price_usd: 80, desc: "Daily rental — fuel-efficient city cruiser" },
-];
+type Filter = "all" | "sale" | "rental";
 
 const Automotive = () => {
   const { theme } = useTheme();
+  const [filter, setFilter] = useState<Filter>("all");
+  const [galleryVehicle, setGalleryVehicle] = useState<Vehicle | null>(null);
+
+  const filtered = filter === "all" ? vehicles : vehicles.filter((v) => v.type === filter);
+
+  const filters: { value: Filter; label: string }[] = [
+    { value: "all", label: "All" },
+    { value: "sale", label: theme === "wave" ? "🔒 Buy" : "For Sale" },
+    { value: "rental", label: theme === "wave" ? "⚡ Rent" : "Rentals" },
+  ];
 
   return (
-    <div className="min-h-screen pt-[calc(1.75rem+6rem)] pb-16">
+    <div className="min-h-screen pt-[calc(1.75rem+6rem)]">
       <div className="container px-4">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center">
           <h1 className="font-display text-4xl md:text-5xl font-black text-foreground text-glow">
             {theme === "wave" ? "// MOTOR VAULT" : "Automotive Portal"}
           </h1>
           <p className="mt-3 text-muted-foreground font-body">
-            {theme === "wave" ? "Vehicles for operatives" : "Sales & Rentals"}
+            {theme === "wave" ? "Acquire or deploy vehicles for operations" : "Premium Sales & Rentals"}
           </p>
         </motion.div>
 
-        <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-6">
-          {vehicles.map((v, i) => (
+        {/* Filters */}
+        <div className="mt-8 flex justify-center gap-3 flex-wrap">
+          {filters.map((f) => (
+            <button
+              key={f.value}
+              onClick={() => setFilter(f.value)}
+              className={`px-4 py-2 rounded-lg font-display text-xs uppercase tracking-wider border transition-all duration-300 ${
+                filter === f.value
+                  ? "bg-primary text-primary-foreground border-primary box-glow"
+                  : "bg-transparent text-muted-foreground border-border hover:border-primary/50"
+              }`}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
+
+        <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filtered.map((v, i) => (
             <motion.div
               key={v.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1 }}
-              className="p-5 rounded-lg border border-border bg-card hover:box-glow hover:border-glow transition-all"
+              transition={{ delay: i * 0.08 }}
+              className="rounded-lg border border-border bg-card hover:box-glow hover:border-glow transition-all overflow-hidden"
             >
-              <div className="flex items-center gap-2 mb-2">
-                {v.type === "sale" ? <Car size={16} className="text-primary" /> : <Key size={16} className="text-secondary" />}
-                <span className="font-display text-[10px] uppercase tracking-widest text-muted-foreground">
-                  {v.type === "sale" ? "For Sale" : "Rental"}
-                </span>
+              {/* Image */}
+              <div
+                className="relative aspect-video bg-muted overflow-hidden cursor-pointer group"
+                onClick={() => setGalleryVehicle(v)}
+              >
+                <img
+                  src={theme === "wave" ? v.image_wave : v.image_roots}
+                  alt={v.name}
+                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-background/0 group-hover:bg-background/40 transition-all flex items-center justify-center">
+                  <Eye size={24} className="text-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                </div>
+                {theme === "wave" && <div className="absolute inset-0 scanline pointer-events-none opacity-20" />}
+                <div className="absolute top-2 left-2">
+                  <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-display uppercase tracking-wider ${
+                    v.type === "sale" ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"
+                  }`}>
+                    {v.type === "sale" ? <Car size={10} /> : <Key size={10} />}
+                    {v.type === "sale" ? "For Sale" : "Rental"}
+                  </span>
+                </div>
               </div>
-              <h3 className="font-display text-lg font-bold text-card-foreground">{v.name}</h3>
-              <p className="text-xs text-muted-foreground font-body mt-1">{v.desc}</p>
-              <div className="mt-3 flex items-baseline gap-2">
-                <span className="font-display text-xl font-black text-primary">${v.price_usd.toLocaleString()}</span>
-                <span className="text-xs text-muted-foreground">{v.price_xaf.toLocaleString()} XAF{v.type === "rental" ? "/day" : ""}</span>
+
+              <div className="p-4">
+                <span className="font-display text-[9px] uppercase tracking-widest text-muted-foreground">{v.category}</span>
+                <h3 className="font-display text-base font-bold text-card-foreground mt-0.5">{v.name}</h3>
+                <p className="text-xs text-muted-foreground font-body mt-1">{v.desc}</p>
+
+                <div className="mt-3 flex items-baseline gap-2">
+                  <span className="font-display text-xl font-black text-primary">${v.price_usd.toLocaleString()}</span>
+                  <span className="text-[10px] text-muted-foreground">
+                    {v.price_xaf.toLocaleString()} XAF{v.type === "rental" ? "/day" : ""}
+                  </span>
+                </div>
+
+                <div className="mt-3 flex gap-2">
+                  <a
+                    href={getWhatsAppUrl(`Hi! I'd like to ${v.type === "sale" ? "buy" : "rent"} the ${v.name} ($${v.price_usd.toLocaleString()}).`)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1"
+                  >
+                    <Button variant="hero" size="sm" className="w-full">
+                      {v.type === "sale"
+                        ? (theme === "wave" ? "Acquire" : "Buy Now")
+                        : (theme === "wave" ? "Deploy" : "Rent Now")}
+                    </Button>
+                  </a>
+                  <Button variant="heroOutline" size="sm" onClick={() => setGalleryVehicle(v)}>
+                    <Eye size={14} />
+                  </Button>
+                </div>
               </div>
-              <a href={getWhatsAppUrl(`Hi! I'm interested in the ${v.name} (${v.type}).`)} target="_blank" rel="noopener noreferrer">
-                <Button variant="hero" size="sm" className="w-full mt-4">
-                  {theme === "wave" ? "Inquire" : "Contact Us"}
-                </Button>
-              </a>
             </motion.div>
           ))}
         </div>
@@ -62,9 +125,16 @@ const Automotive = () => {
             { title: "New Arrivals This Week", date: "Now", type: "notification" },
             { title: "Free Vehicle Inspection Day", date: "Apr 10", type: "event" },
             { title: "Weekend Rental Discount 20%", date: "Ongoing", type: "notification" },
+            { title: "Luxury Fleet Expansion", date: "May 2026", type: "event" },
           ]} />
         </div>
       </div>
+
+      <SponsorshipFooter />
+
+      {galleryVehicle && (
+        <VehicleGallery vehicle={galleryVehicle} onClose={() => setGalleryVehicle(null)} />
+      )}
     </div>
   );
 };

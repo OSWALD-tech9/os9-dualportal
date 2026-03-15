@@ -7,8 +7,8 @@ import { ThemeProvider } from "@/contexts/ThemeContext";
 import { Navbar } from "@/components/Navbar";
 import { WeatherTicker } from "@/components/WeatherTicker";
 import Index from "./pages/Index.tsx";
-import Shop from "./pages/Shop.tsx";
 import ProductDetail from "./pages/ProductDetail.tsx";
+import { Navigate } from "react-router-dom";
 import Pricing from "./pages/Pricing.tsx";
 import Dashboard from "./pages/Dashboard.tsx";
 import Services from "./pages/Services.tsx";
@@ -30,7 +30,7 @@ const App = () => (
           <Navbar />
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/shop" element={<Shop />} />
+            <Route path="/shop" element={<Navigate to="/services" replace />} />
             <Route path="/product/:id" element={<ProductDetail />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/services" element={<Services />} />
