@@ -30,7 +30,7 @@ const App = () => (
           <Navbar />
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/shop" element={<Shop />} />
+            <Route path="/shop" element={<Navigate to="/services" replace />} />
             <Route path="/product/:id" element={<ProductDetail />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/services" element={<Services />} />
