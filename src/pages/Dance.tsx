@@ -181,7 +181,7 @@ const Dance = () => {
                 <label className="block font-display text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">Your Name</label>
                 <Input
                   value={bookingName}
-                  onChange={(e) => setBookingName(e.target.value)}
+                  onChange={(e) => setBookingName(sanitizeOnChange(e.target.value))}
                   placeholder="Enter your name"
                   className="bg-background"
                 />
