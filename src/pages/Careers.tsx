@@ -165,7 +165,7 @@ const Careers = () => {
                     <label className="block font-display text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">Full Name *</label>
                     <Input
                       value={formData.fullName}
-                      onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                      onChange={(e) => setFormData({ ...formData, fullName: sanitizeOnChange(e.target.value) })}
                       placeholder="Your full name"
                       className="bg-background"
                     />
