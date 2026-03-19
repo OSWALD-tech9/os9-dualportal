@@ -7,6 +7,7 @@ import { getWhatsAppUrl } from "@/lib/whatsapp";
 import { EventTicker } from "@/components/EventTicker";
 import { SponsorshipFooter } from "@/components/SponsorshipFooter";
 import { Music, Users, Calendar, ShoppingBag, Globe, Zap, Drum } from "lucide-react";
+import { sanitizeInput, sanitizeOnChange } from "@/lib/sanitize";
 import { products } from "@/data/products";
 import { Link } from "react-router-dom";
 
