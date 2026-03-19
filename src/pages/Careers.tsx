@@ -65,13 +65,21 @@ const Careers = () => {
     setErrors({});
 
     // Build WhatsApp message with application data
+    const safe = {
+      position: sanitizeInput(formData.position),
+      fullName: sanitizeInput(formData.fullName),
+      email: sanitizeInput(formData.email),
+      phone: sanitizeInput(formData.phone),
+      message: formData.message ? sanitizeInput(formData.message) : "",
+    };
+
     const parts = [
       `📋 New Application — OS9 Hub`,
-      `Position: ${formData.position}`,
-      `Name: ${formData.fullName}`,
-      `Email: ${formData.email}`,
-      `Phone: ${formData.phone}`,
-      formData.message ? `Note: ${formData.message}` : "",
+      `Position: ${safe.position}`,
+      `Name: ${safe.fullName}`,
+      `Email: ${safe.email}`,
+      `Phone: ${safe.phone}`,
+      safe.message ? `Note: ${safe.message}` : "",
       cvFile ? `CV: ${cvFile.name} (will be sent separately)` : "CV: Not attached",
     ].filter(Boolean);
 
