@@ -178,7 +178,7 @@ const Careers = () => {
                     <Input
                       type="email"
                       value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      onChange={(e) => setFormData({ ...formData, email: sanitizeOnChange(e.target.value) })}
                       placeholder="your@email.com"
                       className="bg-background"
                     />
