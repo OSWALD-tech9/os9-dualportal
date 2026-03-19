@@ -7,6 +7,7 @@ import { getWhatsAppUrl } from "@/lib/whatsapp";
 import { EventTicker } from "@/components/EventTicker";
 import { SponsorshipFooter } from "@/components/SponsorshipFooter";
 import { Music, Users, Calendar, ShoppingBag, Globe, Zap, Drum } from "lucide-react";
+import { sanitizeInput, sanitizeOnChange } from "@/lib/sanitize";
 import { products } from "@/data/products";
 import { Link } from "react-router-dom";
 
@@ -62,9 +63,10 @@ const Dance = () => {
   };
 
   const buildBookingMessage = () => {
+    const safeName = sanitizeInput(bookingName || "N/A");
     const parts = [
       `Hi! I'd like to book dance training.`,
-      `Name: ${bookingName || "N/A"}`,
+      `Name: ${safeName}`,
       `Style: ${tab === "modern" ? "Modern" : "Traditional"}`,
       `Genre: ${selectedGenre || "Any"}`,
       `Days: ${selectedDays.length ? selectedDays.join(", ") : "Flexible"}`,
@@ -179,7 +181,7 @@ const Dance = () => {
                 <label className="block font-display text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">Your Name</label>
                 <Input
                   value={bookingName}
-                  onChange={(e) => setBookingName(e.target.value)}
+                  onChange={(e) => setBookingName(sanitizeOnChange(e.target.value))}
                   placeholder="Enter your name"
                   className="bg-background"
                 />

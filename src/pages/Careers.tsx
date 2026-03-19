@@ -7,6 +7,7 @@ import { getWhatsAppUrl } from "@/lib/whatsapp";
 import { SponsorshipFooter } from "@/components/SponsorshipFooter";
 import { Briefcase, Users, GraduationCap, Upload, CheckCircle, AlertCircle } from "lucide-react";
 import { z } from "zod";
+import { sanitizeInput, sanitizeOnChange } from "@/lib/sanitize";
 
 const openings = [
   { type: "internship", title: "Software Development Intern", desc: "3-6 month internship in full-stack development. React, Node.js, Supabase.", location: "Buea / Remote" },
@@ -64,13 +65,21 @@ const Careers = () => {
     setErrors({});
 
     // Build WhatsApp message with application data
+    const safe = {
+      position: sanitizeInput(formData.position),
+      fullName: sanitizeInput(formData.fullName),
+      email: sanitizeInput(formData.email),
+      phone: sanitizeInput(formData.phone),
+      message: formData.message ? sanitizeInput(formData.message) : "",
+    };
+
     const parts = [
       `📋 New Application — OS9 Hub`,
-      `Position: ${formData.position}`,
-      `Name: ${formData.fullName}`,
-      `Email: ${formData.email}`,
-      `Phone: ${formData.phone}`,
-      formData.message ? `Note: ${formData.message}` : "",
+      `Position: ${safe.position}`,
+      `Name: ${safe.fullName}`,
+      `Email: ${safe.email}`,
+      `Phone: ${safe.phone}`,
+      safe.message ? `Note: ${safe.message}` : "",
       cvFile ? `CV: ${cvFile.name} (will be sent separately)` : "CV: Not attached",
     ].filter(Boolean);
 
@@ -164,7 +173,7 @@ const Careers = () => {
                     <label className="block font-display text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">Full Name *</label>
                     <Input
                       value={formData.fullName}
-                      onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                      onChange={(e) => setFormData({ ...formData, fullName: sanitizeOnChange(e.target.value) })}
                       placeholder="Your full name"
                       className="bg-background"
                     />
@@ -177,7 +186,7 @@ const Careers = () => {
                     <Input
                       type="email"
                       value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      onChange={(e) => setFormData({ ...formData, email: sanitizeOnChange(e.target.value) })}
                       placeholder="your@email.com"
                       className="bg-background"
                     />
@@ -190,7 +199,7 @@ const Careers = () => {
                     <Input
                       type="tel"
                       value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      onChange={(e) => setFormData({ ...formData, phone: sanitizeOnChange(e.target.value) })}
                       placeholder="+237 6XX XXX XXX"
                       className="bg-background"
                     />
@@ -202,7 +211,7 @@ const Careers = () => {
                     <label className="block font-display text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">Cover Note (Optional)</label>
                     <textarea
                       value={formData.message}
-                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                      onChange={(e) => setFormData({ ...formData, message: sanitizeOnChange(e.target.value) })}
                       placeholder="Tell us about yourself..."
                       maxLength={500}
                       rows={3}
