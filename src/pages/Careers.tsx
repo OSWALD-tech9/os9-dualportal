@@ -7,6 +7,7 @@ import { getWhatsAppUrl } from "@/lib/whatsapp";
 import { SponsorshipFooter } from "@/components/SponsorshipFooter";
 import { Briefcase, Users, GraduationCap, Upload, CheckCircle, AlertCircle } from "lucide-react";
 import { z } from "zod";
+import { sanitizeInput, sanitizeOnChange } from "@/lib/sanitize";
 
 const openings = [
   { type: "internship", title: "Software Development Intern", desc: "3-6 month internship in full-stack development. React, Node.js, Supabase.", location: "Buea / Remote" },
