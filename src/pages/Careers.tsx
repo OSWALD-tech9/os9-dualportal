@@ -203,7 +203,7 @@ const Careers = () => {
                     <label className="block font-display text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">Cover Note (Optional)</label>
                     <textarea
                       value={formData.message}
-                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                      onChange={(e) => setFormData({ ...formData, message: sanitizeOnChange(e.target.value) })}
                       placeholder="Tell us about yourself..."
                       maxLength={500}
                       rows={3}
