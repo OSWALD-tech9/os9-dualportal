@@ -191,7 +191,7 @@ const Careers = () => {
                     <Input
                       type="tel"
                       value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      onChange={(e) => setFormData({ ...formData, phone: sanitizeOnChange(e.target.value) })}
                       placeholder="+237 6XX XXX XXX"
                       className="bg-background"
                     />
