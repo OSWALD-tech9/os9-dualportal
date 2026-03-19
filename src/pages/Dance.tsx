@@ -63,9 +63,10 @@ const Dance = () => {
   };
 
   const buildBookingMessage = () => {
+    const safeName = sanitizeInput(bookingName || "N/A");
     const parts = [
       `Hi! I'd like to book dance training.`,
-      `Name: ${bookingName || "N/A"}`,
+      `Name: ${safeName}`,
       `Style: ${tab === "modern" ? "Modern" : "Traditional"}`,
       `Genre: ${selectedGenre || "Any"}`,
       `Days: ${selectedDays.length ? selectedDays.join(", ") : "Flexible"}`,
