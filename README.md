@@ -1,73 +1,48 @@
-# Welcome to your Lovable project
+# OS9 Hub: Multi-Vertical Service Ecosystem 🚀
+**A Full-Stack Development, Security, and Industrial Integration Case Study**
 
-## Project info
+## 📌 Project Overview
+The **OS9 Hub** is a high-performance digital ecosystem engineered to centralize disparate service sectors—Computing, Automotive, Dance, and E-commerce. This project serves as a technical benchmark for **Serverless Architecture** and **Data Integrity** within the Cameroonian tech landscape.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+### 🏛️ Vertical Integration & Industrial Authorities
+This platform leverages real-world industry data and professional standards to ensure commercial viability:
 
-## How can I edit this code?
+- **Automotive Portfolio:** - **Authorities:** Technical specifications and inventory logic are derived from **TNG Cars** and **Jet Our Cars (Cameroon)**.
+  - **Feature:** Multi-perspective visualization of 2025/2026 fleet models (e.g., Ford Territory).
+- **Dance Studio & Arts:** - **Authority:** Professional certification paths provided by **FOTISMÓS WORLD OF ARTS** and other premier Buea-based academies.
+  - **Feature:** Multi-genre selection engine with integrated credentialing and academic tracking.
+- **Computing & Tech:** High-fidelity representations of Graphic Design, Full-Stack Web Development, and Hardware Systems Maintenance.
 
-There are several ways of editing your application.
+---
 
-**Use Lovable**
+## 🛠️ Technical Stack & Architecture
+| Layer | Technology | Role |
+| :--- | :--- | :--- |
+| **Frontend** | React.js / Vite / Tailwind | Component-based UI Architecture |
+| **Backend** | Supabase (BaaS) | Auth, Edge Functions, & Real-time Sync |
+| **Database** | PostgreSQL | Relational Schema & ACID Compliance |
+| **Security** | Row-Level Security (RLS) | Granular Data Isolation |
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+---
 
-Changes made via Lovable will be committed automatically to this repo.
+## 🛡️ Security & "No-Loophole" Governance
+To mitigate systemic risks, the following protocols are enforced:
+1. **PostgreSQL RLS:** Public users are restricted to `SELECT` operations on inventory, while the `applications` (CV) and `certificates` tables utilize strict isolation policies.
+2. **XSS/CSRF Mitigation:** Rigid input parameterization and sanitization across all submission forms.
+3. **Private Assets:** Professional certifications and sensitive documents are hosted in encrypted, non-public Supabase Storage buckets.
 
-**Use your preferred IDE**
+---
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## 🎓 Certification & Academic Status
+- **Status:** *Academic Certification Pending.*
+- **Context:** This project is a final-phase technical demonstration for the **University of Buea**.
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+---
 
-Follow these steps:
+## 👨‍💻 Developer & Principal Architect
+**O.S.** *Software Science Student | University of Buea*
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+---
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+## 📜 License
+*Proprietary Educational License.* All data regarding **TNG Cars**, **Jet Our Cars**, and **FOTISMÓS WORLD OF ARTS** are the property of their respective authorities.
