@@ -2,7 +2,7 @@
 **A Full-Stack Development, Security, and Industrial Integration Case Study**
 
 ## 📌 Project Overview
-![System Architecture](./assets/arpngchitecture/os9architecture.png)
+![System Architecture](./asset/ar.pnghitecture/os9architecture.png)
 The **OS9 Hub** is a high-performance digital ecosystem engineered to centralize disparate service sectors—Computing, Automotive, Dance, and E-commerce. This project serves as a technical benchmark for **Serverless Architecture** and **Data Integrity** within the Cameroonian tech landscape.
 
 ### 🏛️ Vertical Integration & Industrial Authorities
