@@ -1,8 +1,10 @@
 # OS9 Hub: Multi-Vertical Service Ecosystem 🚀
 **A Full-Stack Development, Security, and Industrial Integration Case Study**
-> *Technical Abstract*
+> #Technical Abstract*
 > 
->The *OS9 Hub* represents a multi-tiered *Distributed System Architecture* designed to facilitate real-time synchronization between disparate vehicular entities (TNG Cars) and a centralized administrative interface. By leveraging a *Relational Database Management System (RDBMS)* via *Supabase, the system implements a robust **Data Persistence Layer* augmented by *PostGIS* for geospatial telemetry.
+>The *OS9 Hub* represents a multi-tiered *Distributed System Architecture* designed to facilitate real-time synchronization between disparate vehicular entities (TNG Cars) and a centralized administrative interface. By leveraging a *Relational Database Management System (RDBMS)* via
+> *Supabase*, the system implements a robust
+> **Data Persistence Layer* augmented by *PostGIS* for geospatial telemetry.
 > 
 >*Architectural Components*
 > 
