@@ -104,4 +104,17 @@ export const vehicles: Vehicle[] = [
     image_roots: "/images/vehicles/corolla-roots.jpg",
     gallery: ["/images/vehicles/corolla-wave.jpg", "/images/vehicles/corolla-roots.jpg"],
   },
+  {
+    id: "v8",
+    name: "Ford Territory 2025",
+    type: "sale",
+    category: "suv",
+    price_xaf: 22000000,
+    price_usd: 35200,
+    desc: "Next-gen smart SUV. Panoramic display, ADAS suite, turbocharged efficiency.",
+    specs: { engine: "1.5L EcoBoost", seats: 5, transmission: "CVT" },
+    image_wave: "/images/vehicles/ford-territory-wave.jpg",
+    image_roots: "/images/vehicles/ford-territory-roots.jpg",
+    gallery: ["/images/vehicles/ford-territory-wave.jpg", "/images/vehicles/ford-territory-roots.jpg"],
+  },
 ];

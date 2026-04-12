@@ -1,5 +1,5 @@
+import { useState, useEffect } from "react";
 import { useTheme } from "@/contexts/ThemeContext";
-import { CloudSun, Thermometer } from "lucide-react";
 import { motion } from "framer-motion";
 
 interface CityWeather {
@@ -8,32 +8,58 @@ interface CityWeather {
   temp: number;
   condition: string;
   icon: string;
+  timezone: string; // IANA timezone
 }
 
-// Mock weather data — will be replaced with real API
 const weatherData: CityWeather[] = [
-  { city: "Buea", country: "CM", temp: 22, condition: "Partly Cloudy", icon: "⛅" },
-  { city: "Douala", country: "CM", temp: 31, condition: "Humid", icon: "🌤️" },
-  { city: "Yaoundé", country: "CM", temp: 27, condition: "Sunny", icon: "☀️" },
-  { city: "Lagos", country: "NG", temp: 30, condition: "Overcast", icon: "🌥️" },
-  { city: "Nairobi", country: "KE", temp: 19, condition: "Cool", icon: "🌤️" },
-  { city: "London", country: "UK", temp: 12, condition: "Rainy", icon: "🌧️" },
-  { city: "New York", country: "US", temp: 8, condition: "Clear", icon: "☀️" },
-  { city: "Tokyo", country: "JP", temp: 15, condition: "Cloudy", icon: "☁️" },
-  { city: "São Paulo", country: "BR", temp: 25, condition: "Warm", icon: "🌤️" },
-  { city: "Sydney", country: "AU", temp: 20, condition: "Breezy", icon: "🌬️" },
+  { city: "Buea", country: "CM", temp: 22, condition: "Partly Cloudy", icon: "⛅", timezone: "Africa/Douala" },
+  { city: "Douala", country: "CM", temp: 31, condition: "Humid", icon: "🌤️", timezone: "Africa/Douala" },
+  { city: "Yaoundé", country: "CM", temp: 27, condition: "Sunny", icon: "☀️", timezone: "Africa/Douala" },
+  { city: "Lagos", country: "NG", temp: 30, condition: "Overcast", icon: "🌥️", timezone: "Africa/Lagos" },
+  { city: "Nairobi", country: "KE", temp: 19, condition: "Cool", icon: "🌤️", timezone: "Africa/Nairobi" },
+  { city: "London", country: "UK", temp: 12, condition: "Rainy", icon: "🌧️", timezone: "Europe/London" },
+  { city: "New York", country: "US", temp: 8, condition: "Clear", icon: "☀️", timezone: "America/New_York" },
+  { city: "Tokyo", country: "JP", temp: 15, condition: "Cloudy", icon: "☁️", timezone: "Asia/Tokyo" },
+  { city: "São Paulo", country: "BR", temp: 25, condition: "Warm", icon: "🌤️", timezone: "America/Sao_Paulo" },
+  { city: "Sydney", country: "AU", temp: 20, condition: "Breezy", icon: "🌬️", timezone: "Australia/Sydney" },
 ];
+
+const getLocalTime = (timezone: string): string => {
+  try {
+    return new Date().toLocaleTimeString("en-GB", {
+      timeZone: timezone,
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  } catch {
+    return "--:--";
+  }
+};
 
 export const WeatherTicker = () => {
   const { theme } = useTheme();
+  const [times, setTimes] = useState<Record<string, string>>({});
   const doubled = [...weatherData, ...weatherData];
+
+  useEffect(() => {
+    const update = () => {
+      const t: Record<string, string> = {};
+      weatherData.forEach((w) => {
+        t[w.city] = getLocalTime(w.timezone);
+      });
+      setTimes(t);
+    };
+    update();
+    const iv = setInterval(update, 30_000);
+    return () => clearInterval(iv);
+  }, []);
 
   return (
     <div className="fixed top-0 left-0 right-0 z-[60] h-7 overflow-hidden border-b border-border/50 bg-card/90 backdrop-blur-md">
       <motion.div
         className="flex items-center h-full whitespace-nowrap"
-        animate={{ x: [0, -(weatherData.length * 180)] }}
-        transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+        animate={{ x: [0, -(weatherData.length * 220)] }}
+        transition={{ duration: 35, repeat: Infinity, ease: "linear" }}
       >
         {doubled.map((w, i) => (
           <span
@@ -43,6 +69,7 @@ export const WeatherTicker = () => {
             <span>{w.icon}</span>
             <span className="text-foreground font-display">{w.city}</span>
             <span>{w.temp}°C</span>
+            <span className="text-primary font-display">{times[w.city] || "--:--"}</span>
             <span className="text-muted-foreground/60">|</span>
           </span>
         ))}
