@@ -5,9 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { getWhatsAppUrl } from "@/lib/whatsapp";
 import { SponsorshipFooter } from "@/components/SponsorshipFooter";
-import { Briefcase, Users, GraduationCap, Upload, CheckCircle, AlertCircle } from "lucide-react";
+import { Briefcase, Users, GraduationCap, Upload, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
 import { z } from "zod";
 import { sanitizeInput, sanitizeOnChange } from "@/lib/sanitize";
+import { supabase } from "@/lib/supabase";
+import { useToast } from "@/hooks/use-toast";
 
 const openings = [
   { type: "internship", title: "Software Development Intern", desc: "3-6 month internship in full-stack development. React, Node.js, Supabase.", location: "Buea / Remote" },
@@ -36,12 +38,14 @@ type FormErrors = Partial<Record<keyof z.infer<typeof applicationSchema>, string
 
 const Careers = () => {
   const { theme } = useTheme();
+  const { toast } = useToast();
   const [showForm, setShowForm] = useState(false);
   const [selectedPosition, setSelectedPosition] = useState("");
   const [formData, setFormData] = useState({ fullName: "", email: "", phone: "", position: "", message: "" });
   const [errors, setErrors] = useState<FormErrors>({});
   const [cvFile, setCvFile] = useState<File | null>(null);
   const [submitted, setSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleApply = (title: string) => {
     setSelectedPosition(title);
@@ -51,7 +55,7 @@ const Careers = () => {
     setErrors({});
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const result = applicationSchema.safeParse(formData);
     if (!result.success) {
       const fieldErrors: FormErrors = {};
@@ -63,8 +67,8 @@ const Careers = () => {
       return;
     }
     setErrors({});
+    setIsLoading(true);
 
-    // Build WhatsApp message with application data
     const safe = {
       position: sanitizeInput(formData.position),
       fullName: sanitizeInput(formData.fullName),
@@ -73,25 +77,64 @@ const Careers = () => {
       message: formData.message ? sanitizeInput(formData.message) : "",
     };
 
-    const parts = [
-      `📋 New Application — OS9 Hub`,
-      `Position: ${safe.position}`,
-      `Name: ${safe.fullName}`,
-      `Email: ${safe.email}`,
-      `Phone: ${safe.phone}`,
-      safe.message ? `Note: ${safe.message}` : "",
-      cvFile ? `CV: ${cvFile.name} (will be sent separately)` : "CV: Not attached",
-    ].filter(Boolean);
+    try {
+      // Upload CV if present
+      let cvPath: string | null = null;
+      if (cvFile) {
+        const fileName = `${Date.now()}_${cvFile.name.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from("applications")
+          .upload(`cvs/${fileName}`, cvFile);
 
-    window.open(getWhatsAppUrl(parts.join("\n")), "_blank");
-    setSubmitted(true);
+        if (uploadError) {
+          console.warn("CV upload failed:", uploadError.message);
+        } else {
+          cvPath = uploadData?.path || null;
+        }
+      }
+
+      // Insert into applications table
+      const { error: insertError } = await supabase.from("applications").insert({
+        full_name: safe.fullName,
+        email: safe.email,
+        phone: safe.phone,
+        position: safe.position,
+        message: safe.message || null,
+        cv_path: cvPath,
+      });
+
+      if (insertError) {
+        console.warn("Supabase insert failed:", insertError.message);
+        // Still proceed to WhatsApp even if DB fails
+      }
+
+      // Build WhatsApp message
+      const parts = [
+        `📋 New Application — OS9 Hub`,
+        `Position: ${safe.position}`,
+        `Name: ${safe.fullName}`,
+        `Email: ${safe.email}`,
+        `Phone: ${safe.phone}`,
+        safe.message ? `Note: ${safe.message}` : "",
+        cvFile ? `CV: ${cvFile.name} (uploaded)` : "CV: Not attached",
+      ].filter(Boolean);
+
+      window.open(getWhatsAppUrl(parts.join("\n")), "_blank");
+      setSubmitted(true);
+      toast({ title: "Application sent!", description: "Your application has been submitted successfully." });
+    } catch (err) {
+      console.error("Submission error:", err);
+      toast({ title: "Error", description: "Something went wrong. Please try again.", variant: "destructive" });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
-        alert("File must be under 5MB");
+        toast({ title: "File too large", description: "File must be under 5MB", variant: "destructive" });
         return;
       }
       setCvFile(file);
@@ -152,7 +195,7 @@ const Careers = () => {
                   {theme === "wave" ? "Transmission Sent" : "Application Submitted!"}
                 </h3>
                 <p className="text-sm text-muted-foreground font-body mt-2">
-                  Your application for <span className="text-foreground font-semibold">{selectedPosition}</span> has been sent via WhatsApp.
+                  Your application for <span className="text-foreground font-semibold">{selectedPosition}</span> has been sent.
                 </p>
                 <Button variant="heroOutline" size="sm" className="mt-4" onClick={() => { setShowForm(false); setSubmitted(false); }}>
                   Close
@@ -168,58 +211,29 @@ const Careers = () => {
                 </p>
 
                 <div className="space-y-4">
-                  {/* Full Name */}
                   <div>
                     <label className="block font-display text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">Full Name *</label>
-                    <Input
-                      value={formData.fullName}
-                      onChange={(e) => setFormData({ ...formData, fullName: sanitizeOnChange(e.target.value) })}
-                      placeholder="Your full name"
-                      className="bg-background"
-                    />
+                    <Input value={formData.fullName} onChange={(e) => setFormData({ ...formData, fullName: sanitizeOnChange(e.target.value) })} placeholder="Your full name" className="bg-background" />
                     {errors.fullName && <p className="text-xs text-destructive mt-1 flex items-center gap-1"><AlertCircle size={12} />{errors.fullName}</p>}
                   </div>
 
-                  {/* Email */}
                   <div>
                     <label className="block font-display text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">Email *</label>
-                    <Input
-                      type="email"
-                      value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: sanitizeOnChange(e.target.value) })}
-                      placeholder="your@email.com"
-                      className="bg-background"
-                    />
+                    <Input type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: sanitizeOnChange(e.target.value) })} placeholder="your@email.com" className="bg-background" />
                     {errors.email && <p className="text-xs text-destructive mt-1 flex items-center gap-1"><AlertCircle size={12} />{errors.email}</p>}
                   </div>
 
-                  {/* Phone */}
                   <div>
                     <label className="block font-display text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">Phone *</label>
-                    <Input
-                      type="tel"
-                      value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: sanitizeOnChange(e.target.value) })}
-                      placeholder="+237 6XX XXX XXX"
-                      className="bg-background"
-                    />
+                    <Input type="tel" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: sanitizeOnChange(e.target.value) })} placeholder="+237 6XX XXX XXX" className="bg-background" />
                     {errors.phone && <p className="text-xs text-destructive mt-1 flex items-center gap-1"><AlertCircle size={12} />{errors.phone}</p>}
                   </div>
 
-                  {/* Message */}
                   <div>
                     <label className="block font-display text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">Cover Note (Optional)</label>
-                    <textarea
-                      value={formData.message}
-                      onChange={(e) => setFormData({ ...formData, message: sanitizeOnChange(e.target.value) })}
-                      placeholder="Tell us about yourself..."
-                      maxLength={500}
-                      rows={3}
-                      className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                    />
+                    <textarea value={formData.message} onChange={(e) => setFormData({ ...formData, message: sanitizeOnChange(e.target.value) })} placeholder="Tell us about yourself..." maxLength={500} rows={3} className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2" />
                   </div>
 
-                  {/* CV Upload */}
                   <div>
                     <label className="block font-display text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">Upload CV / Resume</label>
                     <label className="flex items-center gap-3 px-4 py-3 rounded-lg border border-dashed border-border bg-background cursor-pointer hover:border-primary/50 transition-colors">
@@ -227,18 +241,16 @@ const Careers = () => {
                       <span className="text-xs text-muted-foreground font-body">
                         {cvFile ? cvFile.name : "Click to upload (PDF, DOC — max 5MB)"}
                       </span>
-                      <input
-                        type="file"
-                        accept=".pdf,.doc,.docx"
-                        onChange={handleFileChange}
-                        className="hidden"
-                      />
+                      <input type="file" accept=".pdf,.doc,.docx" onChange={handleFileChange} className="hidden" />
                     </label>
                   </div>
 
-                  {/* Submit */}
-                  <Button variant="hero" size="lg" className="w-full mt-2" onClick={handleSubmit}>
-                    {theme === "wave" ? "Transmit Application" : "Submit Application"}
+                  <Button variant="hero" size="lg" className="w-full mt-2" onClick={handleSubmit} disabled={isLoading}>
+                    {isLoading ? (
+                      <span className="flex items-center gap-2"><Loader2 size={16} className="animate-spin" />Submitting...</span>
+                    ) : (
+                      theme === "wave" ? "Transmit Application" : "Submit Application"
+                    )}
                   </Button>
                 </div>
               </>

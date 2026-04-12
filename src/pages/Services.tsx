@@ -8,12 +8,20 @@ import { Monitor, Film, Camera, Code, Wrench, GraduationCap, Palette, ShoppingBa
 import { products } from "@/data/products";
 import { Link } from "react-router-dom";
 
-const services = [
+interface ServiceItem {
+  title: string;
+  desc: string;
+  icon: React.ReactNode;
+  image_wave?: string;
+  image_roots?: string;
+}
+
+const services: { category: string; icon: React.ReactNode; items: ServiceItem[] }[] = [
   {
     category: "Creative",
     icon: <Palette size={20} />,
     items: [
-      { title: "Graphic Design", desc: "Brand identity, posters, social media visuals", icon: <Palette size={16} /> },
+      { title: "Graphic Design", desc: "Brand identity, posters, social media visuals", icon: <Palette size={16} />, image_wave: "/images/services/graphic-design-wave.jpg", image_roots: "/images/services/graphic-design-roots.jpg" },
       { title: "Video Editing", desc: "Professional post-production and color grading", icon: <Film size={16} /> },
       { title: "Cinematography", desc: "High-end shooting for commercials and events", icon: <Camera size={16} /> },
     ],
@@ -22,9 +30,9 @@ const services = [
     category: "Engineering",
     icon: <Code size={20} />,
     items: [
-      { title: "App Development", desc: "Mobile and web applications built to spec", icon: <Monitor size={16} /> },
-      { title: "Full-Stack Engineering", desc: "End-to-end product development", icon: <Code size={16} /> },
-      { title: "Maintenance & Updates", desc: "OS updates, troubleshooting, optimization", icon: <Wrench size={16} /> },
+      { title: "App Development", desc: "Mobile and web applications built to spec", icon: <Monitor size={16} />, image_wave: "/images/services/webdev-wave.jpg", image_roots: "/images/services/webdev-roots.jpg" },
+      { title: "Full-Stack Engineering", desc: "End-to-end product development", icon: <Code size={16} />, image_wave: "/images/services/fullstack-wave.jpg", image_roots: "/images/services/fullstack-roots.jpg" },
+      { title: "Maintenance & Updates", desc: "OS updates, troubleshooting, optimization", icon: <Wrench size={16} />, image_wave: "/images/services/maintenance-wave.jpg", image_roots: "/images/services/maintenance-roots.jpg" },
     ],
   },
   {
@@ -70,19 +78,30 @@ const Services = () => {
                 <h2 className="font-display text-xl font-bold text-foreground">{cat.category}</h2>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {cat.items.map((item) => (
-                  <div key={item.title} className="p-5 rounded-lg border border-border bg-card hover:box-glow hover:border-glow transition-all duration-300">
-                    <div className="flex items-center gap-2 text-primary mb-2">{item.icon}
-                      <h3 className="font-display text-sm uppercase tracking-wider text-card-foreground">{item.title}</h3>
+                {cat.items.map((item) => {
+                  const img = theme === "wave" ? item.image_wave : item.image_roots;
+                  return (
+                    <div key={item.title} className="rounded-lg border border-border bg-card hover:box-glow hover:border-glow transition-all overflow-hidden">
+                      {img && (
+                        <div className="aspect-video bg-muted relative overflow-hidden">
+                          <img src={img} alt={item.title} loading="lazy" className="h-full w-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                          {theme === "wave" && <div className="absolute inset-0 scanline pointer-events-none opacity-20" />}
+                        </div>
+                      )}
+                      <div className="p-5">
+                        <div className="flex items-center gap-2 text-primary mb-2">{item.icon}
+                          <h3 className="font-display text-sm uppercase tracking-wider text-card-foreground">{item.title}</h3>
+                        </div>
+                        <p className="text-xs text-muted-foreground font-body mb-4">{item.desc}</p>
+                        <a href={getWhatsAppUrl(`Hi! I'm interested in your ${item.title} service.`)} target="_blank" rel="noopener noreferrer">
+                          <Button variant="heroOutline" size="sm" className="w-full">
+                            {theme === "wave" ? "Inquire" : "Get in Touch"}
+                          </Button>
+                        </a>
+                      </div>
                     </div>
-                    <p className="text-xs text-muted-foreground font-body mb-4">{item.desc}</p>
-                    <a href={getWhatsAppUrl(`Hi! I'm interested in your ${item.title} service.`)} target="_blank" rel="noopener noreferrer">
-                      <Button variant="heroOutline" size="sm" className="w-full">
-                        {theme === "wave" ? "Inquire" : "Get in Touch"}
-                      </Button>
-                    </a>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </motion.div>
           ))}

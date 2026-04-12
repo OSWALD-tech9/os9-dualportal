@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { getWhatsAppUrl } from "@/lib/whatsapp";
 import { EventTicker } from "@/components/EventTicker";
 import { SponsorshipFooter } from "@/components/SponsorshipFooter";
-import { Music, Users, Calendar, ShoppingBag, Globe, Zap, Drum } from "lucide-react";
+import { Music, Users, Calendar, ShoppingBag, Globe, Zap, Drum, CheckSquare } from "lucide-react";
 import { sanitizeInput, sanitizeOnChange } from "@/lib/sanitize";
 import { products } from "@/data/products";
 import { Link } from "react-router-dom";
@@ -49,14 +49,21 @@ const upcomingEvents = [
 const Dance = () => {
   const { theme } = useTheme();
   const [tab, setTab] = useState<DanceTab>("modern");
-  const [selectedGenre, setSelectedGenre] = useState<string | null>(null);
+  const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
   const [selectedDays, setSelectedDays] = useState<string[]>([]);
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
   const [international, setInternational] = useState(false);
   const [bookingName, setBookingName] = useState("");
 
   const apparel = products.filter((p) => p.category === "heritage-apparel");
-  const genres = tab === "modern" ? modernGenres : traditionalGenres;
+  const allGenres = [...modernGenres, ...traditionalGenres];
+  const displayGenres = tab === "modern" ? modernGenres : traditionalGenres;
+
+  const toggleGenre = (name: string) => {
+    setSelectedGenres((prev) =>
+      prev.includes(name) ? prev.filter((g) => g !== name) : [...prev, name]
+    );
+  };
 
   const toggleDay = (day: string) => {
     setSelectedDays((prev) => prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]);
@@ -64,11 +71,11 @@ const Dance = () => {
 
   const buildBookingMessage = () => {
     const safeName = sanitizeInput(bookingName || "N/A");
+    const safeGenres = selectedGenres.map((g) => sanitizeInput(g));
     const parts = [
       `Hi! I'd like to book dance training.`,
       `Name: ${safeName}`,
-      `Style: ${tab === "modern" ? "Modern" : "Traditional"}`,
-      `Genre: ${selectedGenre || "Any"}`,
+      `Genres: ${safeGenres.length ? safeGenres.join(", ") : "Any"}`,
       `Days: ${selectedDays.length ? selectedDays.join(", ") : "Flexible"}`,
       `Slot: ${selectedSlot || "Flexible"}`,
       international ? "International booking: Yes" : "",
@@ -112,18 +119,19 @@ const Dance = () => {
           ))}
         </div>
 
-        {/* === BIFURCATED GENRE SECTION === */}
+        {/* === BIFURCATED GENRE SECTION — MULTI-SELECT === */}
         <div className="mt-16">
           <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="text-center mb-6">
             <h2 className="font-display text-2xl font-bold text-foreground text-glow">
-              {theme === "wave" ? "// SELECT PROTOCOL" : "Choose Your Style"}
+              {theme === "wave" ? "// SELECT PROTOCOLS" : "Choose Your Styles"}
             </h2>
+            <p className="text-xs text-muted-foreground font-body mt-1">Select multiple genres for a single session</p>
           </motion.div>
 
           {/* Tabs */}
-          <div className="flex justify-center gap-3 mb-8">
+          <div className="flex justify-center gap-3 mb-4">
             <button
-              onClick={() => { setTab("modern"); setSelectedGenre(null); }}
+              onClick={() => setTab("modern")}
               className={`flex items-center gap-2 px-5 py-2.5 rounded-lg font-display text-xs uppercase tracking-wider border transition-all duration-300 ${
                 tab === "modern"
                   ? "bg-primary text-primary-foreground border-primary box-glow"
@@ -134,7 +142,7 @@ const Dance = () => {
               {theme === "wave" ? "Modern Ops" : "Modern"}
             </button>
             <button
-              onClick={() => { setTab("traditional"); setSelectedGenre(null); }}
+              onClick={() => setTab("traditional")}
               className={`flex items-center gap-2 px-5 py-2.5 rounded-lg font-display text-xs uppercase tracking-wider border transition-all duration-300 ${
                 tab === "traditional"
                   ? "bg-primary text-primary-foreground border-primary box-glow"
@@ -146,25 +154,43 @@ const Dance = () => {
             </button>
           </div>
 
-          {/* Genre Grid */}
+          {/* Selected count */}
+          {selectedGenres.length > 0 && (
+            <div className="text-center mb-4">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-display uppercase tracking-wider">
+                <CheckSquare size={12} />
+                {selectedGenres.length} genre{selectedGenres.length > 1 ? "s" : ""} selected
+              </span>
+            </div>
+          )}
+
+          {/* Genre Grid — multi-select */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {genres.map((g, i) => (
-              <motion.button
-                key={g.name}
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.06 }}
-                onClick={() => setSelectedGenre(selectedGenre === g.name ? null : g.name)}
-                className={`text-left p-5 rounded-lg border transition-all duration-300 ${
-                  selectedGenre === g.name
-                    ? "border-primary bg-primary/10 box-glow"
-                    : "border-border bg-card hover:border-primary/30"
-                }`}
-              >
-                <h4 className="font-display text-sm font-bold text-card-foreground">{g.name}</h4>
-                <p className="text-xs text-muted-foreground font-body mt-1">{g.desc}</p>
-              </motion.button>
-            ))}
+            {displayGenres.map((g, i) => {
+              const isSelected = selectedGenres.includes(g.name);
+              return (
+                <motion.button
+                  key={g.name}
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.06 }}
+                  onClick={() => toggleGenre(g.name)}
+                  className={`text-left p-5 rounded-lg border transition-all duration-300 relative ${
+                    isSelected
+                      ? "border-primary bg-primary/10 box-glow"
+                      : "border-border bg-card hover:border-primary/30"
+                  }`}
+                >
+                  {isSelected && (
+                    <div className="absolute top-2 right-2 h-5 w-5 rounded bg-primary flex items-center justify-center">
+                      <CheckSquare size={12} className="text-primary-foreground" />
+                    </div>
+                  )}
+                  <h4 className="font-display text-sm font-bold text-card-foreground">{g.name}</h4>
+                  <p className="text-xs text-muted-foreground font-body mt-1">{g.desc}</p>
+                </motion.button>
+              );
+            })}
           </div>
         </div>
 
@@ -175,6 +201,21 @@ const Dance = () => {
               <h3 className="font-display text-lg font-bold text-card-foreground text-glow mb-4 text-center">
                 {theme === "wave" ? "// DEPLOY TRAINING" : "Book a Session"}
               </h3>
+
+              {/* Selected genres summary */}
+              {selectedGenres.length > 0 && (
+                <div className="mb-4 p-3 rounded-lg bg-primary/5 border border-primary/20">
+                  <label className="block font-display text-[10px] uppercase tracking-widest text-muted-foreground mb-2">Selected Genres</label>
+                  <div className="flex flex-wrap gap-1.5">
+                    {selectedGenres.map((g) => (
+                      <span key={g} className="inline-flex items-center gap-1 px-2 py-1 rounded bg-primary/15 text-primary text-[10px] font-display uppercase tracking-wider">
+                        {g}
+                        <button onClick={() => toggleGenre(g)} className="ml-0.5 hover:text-destructive">×</button>
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* Name */}
               <div className="mb-4">
@@ -274,12 +315,7 @@ const Dance = () => {
             {apparel.map((product, i) => {
               const image = theme === "wave" ? product.image_wave : product.image_roots;
               return (
-                <motion.div
-                  key={product.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.1 }}
-                >
+                <motion.div key={product.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}>
                   <Link to={`/product/${product.id}`} className="group block">
                     <div className="rounded-lg border border-border bg-card hover:box-glow hover:border-glow transition-all overflow-hidden">
                       <div className="aspect-square bg-muted relative overflow-hidden">
