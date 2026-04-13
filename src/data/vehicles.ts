@@ -9,8 +9,24 @@ export interface Vehicle {
   specs: { engine: string; seats: number; transmission: string };
   image_wave: string;
   image_roots: string;
+  /** Optional multi-view images — if present, gallery uses these */
+  image_front?: string;
+  image_back?: string;
+  image_interior?: string;
   gallery: string[];
 }
+
+/** Build gallery array from multi-view fields, falling back to wave/roots images */
+export const buildGallery = (v: Vehicle, theme: "wave" | "roots"): string[] => {
+  const multiView = [v.image_front, v.image_back, v.image_interior].filter(
+    (img): img is string => !!img && img.trim() !== ""
+  );
+  if (multiView.length > 0) return multiView;
+  // Fallback: use theme-specific images
+  return theme === "wave"
+    ? [v.image_wave, ...(v.gallery || [])].filter(Boolean)
+    : [v.image_roots, ...(v.gallery || [])].filter(Boolean);
+};
 
 export const vehicles: Vehicle[] = [
   {

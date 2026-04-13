@@ -12,16 +12,16 @@ interface CityWeather {
 }
 
 const weatherData: CityWeather[] = [
-  { city: "Buea", country: "CM", temp: 22, condition: "Partly Cloudy", icon: "⛅", timezone: "Africa/Douala" },
-  { city: "Douala", country: "CM", temp: 31, condition: "Humid", icon: "🌤️", timezone: "Africa/Douala" },
-  { city: "Yaoundé", country: "CM", temp: 27, condition: "Sunny", icon: "☀️", timezone: "Africa/Douala" },
-  { city: "Lagos", country: "NG", temp: 30, condition: "Overcast", icon: "🌥️", timezone: "Africa/Lagos" },
-  { city: "Nairobi", country: "KE", temp: 19, condition: "Cool", icon: "🌤️", timezone: "Africa/Nairobi" },
-  { city: "London", country: "UK", temp: 12, condition: "Rainy", icon: "🌧️", timezone: "Europe/London" },
-  { city: "New York", country: "US", temp: 8, condition: "Clear", icon: "☀️", timezone: "America/New_York" },
-  { city: "Tokyo", country: "JP", temp: 15, condition: "Cloudy", icon: "☁️", timezone: "Asia/Tokyo" },
-  { city: "São Paulo", country: "BR", temp: 25, condition: "Warm", icon: "🌤️", timezone: "America/Sao_Paulo" },
-  { city: "Sydney", country: "AU", temp: 20, condition: "Breezy", icon: "🌬️", timezone: "Australia/Sydney" },
+  { city: "Buea", country: "🇨🇲", temp: 22, condition: "Partly Cloudy", icon: "⛅", timezone: "Africa/Douala" },
+  { city: "Douala", country: "🇨🇲", temp: 31, condition: "Humid", icon: "🌤️", timezone: "Africa/Douala" },
+  { city: "Yaoundé", country: "🇨🇲", temp: 27, condition: "Sunny", icon: "☀️", timezone: "Africa/Douala" },
+  { city: "Lagos", country: "🇳🇬", temp: 30, condition: "Overcast", icon: "🌥️", timezone: "Africa/Lagos" },
+  { city: "Nairobi", country: "🇰🇪", temp: 19, condition: "Cool", icon: "🌤️", timezone: "Africa/Nairobi" },
+  { city: "London", country: "🇬🇧", temp: 12, condition: "Rainy", icon: "🌧️", timezone: "Europe/London" },
+  { city: "New York", country: "🇺🇸", temp: 8, condition: "Clear", icon: "☀️", timezone: "America/New_York" },
+  { city: "Tokyo", country: "🇯🇵", temp: 15, condition: "Cloudy", icon: "☁️", timezone: "Asia/Tokyo" },
+  { city: "São Paulo", country: "🇧🇷", temp: 25, condition: "Warm", icon: "🌤️", timezone: "America/Sao_Paulo" },
+  { city: "Sydney", country: "🇦🇺", temp: 20, condition: "Breezy", icon: "🌬️", timezone: "Australia/Sydney" },
 ];
 
 const getLocalTime = (timezone: string): string => {
@@ -68,6 +68,7 @@ export const WeatherTicker = () => {
           >
             <span>{w.icon}</span>
             <span className="text-foreground font-display">{w.city}</span>
+            <span>{w.country}</span>
             <span>{w.temp}°C</span>
             <span className="text-primary font-display">{times[w.city] || "--:--"}</span>
             <span className="text-muted-foreground/60">|</span>
