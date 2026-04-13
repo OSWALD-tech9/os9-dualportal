@@ -66,9 +66,9 @@ export const WeatherTicker = () => {
             key={`${w.city}-${i}`}
             className="inline-flex items-center gap-1.5 px-4 font-body text-[10px] uppercase tracking-wider text-muted-foreground"
           >
+            <span className="text-sm not-sr-only">{w.country}</span>
             <span>{w.icon}</span>
             <span className="text-foreground font-display">{w.city}</span>
-            <span>{w.country}</span>
             <span>{w.temp}°C</span>
             <span className="text-primary font-display">{times[w.city] || "--:--"}</span>
             <span className="text-muted-foreground/60">|</span>
