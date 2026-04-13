@@ -2,19 +2,19 @@ import { useState } from "react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
-import type { Vehicle } from "@/data/vehicles";
+import { type Vehicle, buildGallery } from "@/data/vehicles";
 
 interface VehicleGalleryProps {
   vehicle: Vehicle;
   onClose: () => void;
 }
 
-const viewLabels = ["Front View", "Side / Alternate View"];
+const viewLabels = ["Front View", "Rear View", "Interior"];
 
 export const VehicleGallery = ({ vehicle, onClose }: VehicleGalleryProps) => {
   const { theme } = useTheme();
   const [currentIndex, setCurrentIndex] = useState(0);
-  const images = vehicle.gallery;
+  const images = buildGallery(vehicle, theme as "wave" | "roots");
 
   const next = () => setCurrentIndex((i) => (i + 1) % images.length);
   const prev = () => setCurrentIndex((i) => (i - 1 + images.length) % images.length);
