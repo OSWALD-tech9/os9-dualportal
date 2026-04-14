@@ -93,19 +93,18 @@ const Careers = () => {
         }
       }
 
-      // Insert into applications table
+      // Insert into applications table (schema: id, full_name, email, resume_url, created_at)
       const { error: insertError } = await supabase.from("applications").insert({
         full_name: safe.fullName,
         email: safe.email,
-        phone: safe.phone,
-        position: safe.position,
-        message: safe.message || null,
-        cv_path: cvPath,
+        resume_url: cvPath,
       });
 
       if (insertError) {
-        console.warn("Supabase insert failed:", insertError.message);
-        // Still proceed to WhatsApp even if DB fails
+        console.error("Supabase insert failed:", insertError.message, insertError);
+        toast({ title: "Submission Failed", description: `Database error: ${insertError.message}`, variant: "destructive" });
+        setIsLoading(false);
+        return;
       }
 
       // Build WhatsApp message
