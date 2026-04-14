@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { getWhatsAppUrl } from "@/lib/whatsapp";
 import { EventTicker } from "@/components/EventTicker";
 import { SponsorshipFooter } from "@/components/SponsorshipFooter";
-import { Monitor, Film, Camera, Code, Wrench, GraduationCap, Palette, ShoppingBag } from "lucide-react";
+import { useSupabaseServices, type SupabaseService } from "@/hooks/use-supabase-data";
+import { Monitor, Film, Camera, Code, Wrench, GraduationCap, Palette, ShoppingBag, Loader2 } from "lucide-react";
 import { products } from "@/data/products";
 import { Link } from "react-router-dom";
 
@@ -12,11 +13,13 @@ interface ServiceItem {
   title: string;
   desc: string;
   icon: React.ReactNode;
+  whatsapp_link?: string;
   image_wave?: string;
   image_roots?: string;
 }
 
-const services: { category: string; icon: React.ReactNode; items: ServiceItem[] }[] = [
+// Local fallback services
+const localServices: { category: string; icon: React.ReactNode; items: ServiceItem[] }[] = [
   {
     category: "Creative",
     icon: <Palette size={20} />,
@@ -45,6 +48,38 @@ const services: { category: string; icon: React.ReactNode; items: ServiceItem[] 
   },
 ];
 
+const iconMap: Record<string, React.ReactNode> = {
+  creative: <Palette size={16} />,
+  engineering: <Code size={16} />,
+  academic: <GraduationCap size={16} />,
+};
+
+/** Merge Supabase services into category groups */
+const buildServiceGroups = (remote: SupabaseService[]) => {
+  if (remote.length === 0) return localServices;
+
+  const grouped = new Map<string, ServiceItem[]>();
+  remote.forEach((s) => {
+    const cat = s.category || "Other";
+    if (!grouped.has(cat)) grouped.set(cat, []);
+    grouped.get(cat)!.push({
+      title: s.tittle, // DB column has typo
+      desc: s.description || "",
+      icon: iconMap[cat.toLowerCase()] || <Monitor size={16} />,
+      whatsapp_link: s.whatsapp_link,
+    });
+  });
+
+  // If we got remote data, build groups from it
+  const groups = Array.from(grouped.entries()).map(([category, items]) => ({
+    category,
+    icon: iconMap[category.toLowerCase()] || <Monitor size={20} />,
+    items,
+  }));
+
+  return groups.length > 0 ? groups : localServices;
+};
+
 const bootcampEvents = [
   { title: "Python Bootcamp — Beginners", date: "Apr 5", type: "bootcamp" as const },
   { title: "React Hackathon 2026", date: "Apr 20", type: "competition" as const },
@@ -55,7 +90,10 @@ const bootcampEvents = [
 
 const Services = () => {
   const { theme } = useTheme();
+  const { data: remoteServices, loading, error } = useSupabaseServices();
   const spyTech = products.filter((p) => p.category === "spy-tech");
+
+  const services = buildServiceGroups(remoteServices);
 
   return (
     <div className="min-h-screen pt-[calc(1.75rem+6rem)]">
@@ -69,6 +107,18 @@ const Services = () => {
           </p>
         </motion.div>
 
+        {/* Sync status */}
+        {loading && (
+          <div className="mt-4 flex items-center justify-center gap-2 text-xs text-muted-foreground">
+            <Loader2 size={14} className="animate-spin" /> Syncing services...
+          </div>
+        )}
+        {error && (
+          <div className="mt-4 text-center text-xs text-destructive">
+            ⚠ Live sync failed — showing cached data
+          </div>
+        )}
+
         {/* Services */}
         <div className="mt-12 space-y-12">
           {services.map((cat, ci) => (
@@ -80,6 +130,7 @@ const Services = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {cat.items.map((item) => {
                   const img = theme === "wave" ? item.image_wave : item.image_roots;
+                  const whatsappUrl = item.whatsapp_link || getWhatsAppUrl(`Hi! I'm interested in your ${item.title} service.`);
                   return (
                     <div key={item.title} className="rounded-lg border border-border bg-card hover:box-glow hover:border-glow transition-all overflow-hidden">
                       {img && (
@@ -93,7 +144,7 @@ const Services = () => {
                           <h3 className="font-display text-sm uppercase tracking-wider text-card-foreground">{item.title}</h3>
                         </div>
                         <p className="text-xs text-muted-foreground font-body mb-4">{item.desc}</p>
-                        <a href={getWhatsAppUrl(`Hi! I'm interested in your ${item.title} service.`)} target="_blank" rel="noopener noreferrer">
+                        <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
                           <Button variant="heroOutline" size="sm" className="w-full">
                             {theme === "wave" ? "Inquire" : "Get in Touch"}
                           </Button>

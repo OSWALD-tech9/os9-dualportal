@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -6,16 +6,41 @@ import { getWhatsAppUrl } from "@/lib/whatsapp";
 import { EventTicker } from "@/components/EventTicker";
 import { SponsorshipFooter } from "@/components/SponsorshipFooter";
 import { VehicleGallery } from "@/components/VehicleGallery";
-import { vehicles, type Vehicle } from "@/data/vehicles";
-import { Car, Key, Eye } from "lucide-react";
+import { vehicles as localVehicles, type Vehicle } from "@/data/vehicles";
+import { useSupabaseVehicles, type SupabaseVehicle } from "@/hooks/use-supabase-data";
+import { Car, Key, Eye, Loader2 } from "lucide-react";
 
 type Filter = "all" | "sale" | "rental";
+
+/** Map Supabase vehicle rows onto the local Vehicle shape for rendering */
+const mergeVehicleData = (local: Vehicle[], remote: SupabaseVehicle[]): Vehicle[] => {
+  if (remote.length === 0) return local;
+
+  // Build a lookup by model name (lowercase) for fuzzy matching
+  const remoteMap = new Map<string, SupabaseVehicle>();
+  remote.forEach((r) => remoteMap.set(r.model.toLowerCase(), r));
+
+  return local.map((v) => {
+    const match = remoteMap.get(v.name.toLowerCase()) || remote.find((r) => v.name.toLowerCase().includes(r.model.toLowerCase()));
+    if (!match) return v;
+
+    return {
+      ...v,
+      price_xaf: match.price_xaf || v.price_xaf,
+      image_front: match.image_front || v.image_front,
+      image_back: match.image_back || v.image_back,
+      image_interior: match.image_interior || v.image_interior,
+    };
+  });
+};
 
 const Automotive = () => {
   const { theme } = useTheme();
   const [filter, setFilter] = useState<Filter>("all");
   const [galleryVehicle, setGalleryVehicle] = useState<Vehicle | null>(null);
+  const { data: remoteVehicles, loading, error } = useSupabaseVehicles();
 
+  const vehicles = mergeVehicleData(localVehicles, remoteVehicles);
   const filtered = filter === "all" ? vehicles : vehicles.filter((v) => v.type === filter);
 
   const filters: { value: Filter; label: string }[] = [
@@ -35,6 +60,18 @@ const Automotive = () => {
             {theme === "wave" ? "Acquire or deploy vehicles for operations" : "Premium Sales & Rentals"}
           </p>
         </motion.div>
+
+        {/* Supabase sync indicator */}
+        {loading && (
+          <div className="mt-4 flex items-center justify-center gap-2 text-xs text-muted-foreground">
+            <Loader2 size={14} className="animate-spin" /> Syncing vehicle data...
+          </div>
+        )}
+        {error && (
+          <div className="mt-4 text-center text-xs text-destructive">
+            ⚠ Live sync failed — showing cached data
+          </div>
+        )}
 
         {/* Filters */}
         <div className="mt-8 flex justify-center gap-3 flex-wrap">

@@ -3,13 +3,19 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { motion } from "framer-motion";
 import { products } from "@/data/products";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ShoppingCart } from "lucide-react";
+import { ArrowLeft, ShoppingCart, Loader2, CheckCircle } from "lucide-react";
 import { getWhatsAppUrl } from "@/lib/whatsapp";
+import { insertOrder } from "@/hooks/use-supabase-data";
+import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
 
 const ProductDetail = () => {
   const { id } = useParams();
   const { theme } = useTheme();
+  const { toast } = useToast();
   const product = products.find((p) => p.id === id);
+  const [orderLoading, setOrderLoading] = useState(false);
+  const [orderSuccess, setOrderSuccess] = useState(false);
 
   if (!product) {
     return (
@@ -25,6 +31,36 @@ const ProductDetail = () => {
   }
 
   const image = theme === "wave" ? product.image_wave : product.image_roots;
+
+  const handleOrder = async () => {
+    setOrderLoading(true);
+    setOrderSuccess(false);
+
+    const result = await insertOrder({
+      product_id: product.id,
+      status: "pending",
+      order_date: new Date().toISOString(),
+    });
+
+    if (result.success) {
+      setOrderSuccess(true);
+      toast({ title: "Order Placed!", description: `Your order for ${product.name} has been recorded.` });
+      // Also open WhatsApp for direct contact
+      window.open(
+        getWhatsAppUrl(`Hi! I'd like to buy: ${product.name} ($${product.price_usd} / ${product.price_xaf.toLocaleString()} XAF)`),
+        "_blank"
+      );
+    } else {
+      console.error("Order failed:", result.error);
+      toast({
+        title: "Order Failed",
+        description: `Database error: ${result.error}`,
+        variant: "destructive",
+      });
+    }
+
+    setOrderLoading(false);
+  };
 
   return (
     <div className="min-h-screen pt-[calc(1.75rem+6rem)] pb-16">
@@ -86,13 +122,27 @@ const ProductDetail = () => {
                 </span>
               </div>
               <div className="mt-4 flex gap-3">
-                <a href={getWhatsAppUrl(`Hi! I'd like to buy: ${product.name} ($${product.price_usd} / ${product.price_xaf.toLocaleString()} XAF)`)} target="_blank" rel="noopener noreferrer" className="flex-1">
-                  <Button variant="hero" size="lg" className="w-full gap-2">
-                    <ShoppingCart size={18} />
-                    {theme === "wave" ? "Buy Now" : "Purchase"}
-                  </Button>
-                </a>
+                <Button
+                  variant="hero"
+                  size="lg"
+                  className="flex-1 gap-2"
+                  onClick={handleOrder}
+                  disabled={orderLoading || orderSuccess}
+                >
+                  {orderLoading ? (
+                    <><Loader2 size={18} className="animate-spin" /> Placing Order...</>
+                  ) : orderSuccess ? (
+                    <><CheckCircle size={18} /> Order Placed</>
+                  ) : (
+                    <><ShoppingCart size={18} /> {theme === "wave" ? "Buy Now" : "Purchase"}</>
+                  )}
+                </Button>
               </div>
+              {orderSuccess && (
+                <p className="mt-3 text-xs text-green-400 font-body text-center">
+                  ✓ Order recorded in database. WhatsApp confirmation sent.
+                </p>
+              )}
             </div>
 
             {/* Specs */}
