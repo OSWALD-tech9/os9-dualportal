@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useTheme } from "@/contexts/ThemeContext";
 import { getWhatsAppUrl } from "@/lib/whatsapp";
 import { Button } from "@/components/ui/button";
+import logoAsset from "@/assets/os9hub-logo.jpg.asset.json";
 
 const sponsorLevels = [
   {
@@ -101,6 +102,11 @@ export const SponsorshipFooter = () => {
           </div>
 
           <div className="flex flex-col items-center gap-2">
+            <img
+              src={logoAsset.url}
+              alt="OS9 Works & Tech logo"
+              className="h-12 w-12 object-contain rounded-full bg-white p-0.5 shadow-[0_0_10px_hsl(var(--glow)/0.3)]"
+            />
             <span className="font-display text-sm text-muted-foreground tracking-widest">
               OS9<span className="text-primary">HUB</span> © 2026
             </span>
