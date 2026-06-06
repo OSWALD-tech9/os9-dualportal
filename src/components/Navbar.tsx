@@ -3,6 +3,7 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { motion } from "framer-motion";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { useState } from "react";
+import logoAsset from "@/assets/os9hub-logo.png.asset.json";
 
 const navLinks = [
   { to: "/", label: "Home" },
