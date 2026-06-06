@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useTheme } from "@/contexts/ThemeContext";
 import { getWhatsAppUrl } from "@/lib/whatsapp";
 import { Button } from "@/components/ui/button";
+import logoAsset from "@/assets/os9hub-logo.jpg.asset.json";
 
 const sponsorLevels = [
   {
