@@ -23,7 +23,13 @@ export const Navbar = () => {
     <nav className="fixed top-7 left-0 right-0 z-50 border-b border-border bg-background/80 backdrop-blur-xl">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link to="/" className="flex items-center gap-2 font-display text-xl font-bold tracking-widest text-foreground">
-          <img src={logoAsset.url} alt="OS9 Works & Tech logo" className="h-10 w-10 object-contain rounded-full bg-white p-0.5 shadow-[0_0_10px_hsl(var(--glow)/0.4)]" />
+          <span className="relative inline-block">
+            <img src={logoAsset.url} alt="OS9 Works & Tech logo" className="h-10 w-10 object-contain rounded-full bg-white p-0.5 shadow-[0_0_10px_hsl(var(--glow)/0.4)]" />
+            <svg viewBox="0 0 24 24" className="absolute -bottom-0.5 -right-0.5 h-4 w-4 text-[#1DA1F2] drop-shadow-[0_0_4px_rgba(29,161,242,0.8)]" aria-label="Verified">
+              <path fill="currentColor" d="M12 1.5l2.39 2.05 3.13-.34.84 3.04 2.79 1.5-1.06 2.97 1.06 2.97-2.79 1.5-.84 3.04-3.13-.34L12 19.94l-2.39-2.05-3.13.34-.84-3.04L2.85 13.7l1.06-2.97L2.85 7.76l2.79-1.5.84-3.04 3.13.34L12 1.5z"/>
+              <path fill="#fff" d="M10.6 14.6l-2.7-2.7 1.1-1.1 1.6 1.6 4-4 1.1 1.1z"/>
+            </svg>
+          </span>
           <span>OS9<span className="text-primary">HUB</span></span>
         </Link>
 
