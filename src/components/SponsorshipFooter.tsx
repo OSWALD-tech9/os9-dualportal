@@ -102,6 +102,11 @@ export const SponsorshipFooter = () => {
           </div>
 
           <div className="flex flex-col items-center gap-2">
+            <img
+              src={logoAsset.url}
+              alt="OS9 Works & Tech logo"
+              className="h-12 w-12 object-contain rounded-full bg-white p-0.5 shadow-[0_0_10px_hsl(var(--glow)/0.3)]"
+            />
             <span className="font-display text-sm text-muted-foreground tracking-widest">
               OS9<span className="text-primary">HUB</span> © 2026
             </span>
