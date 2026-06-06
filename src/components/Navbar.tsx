@@ -3,7 +3,7 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { motion } from "framer-motion";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { useState } from "react";
-import logoAsset from "@/assets/os9hub-logo.png.asset.json";
+import logoAsset from "@/assets/os9hub-logo.jpg.asset.json";
 
 const navLinks = [
   { to: "/", label: "Home" },
@@ -23,7 +23,7 @@ export const Navbar = () => {
     <nav className="fixed top-7 left-0 right-0 z-50 border-b border-border bg-background/80 backdrop-blur-xl">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link to="/" className="flex items-center gap-2 font-display text-xl font-bold tracking-widest text-foreground">
-          <img src={logoAsset.url} alt="OS9 Works & Tech logo" className="h-10 w-10 object-contain drop-shadow-[0_0_8px_hsl(var(--glow)/0.6)]" />
+          <img src={logoAsset.url} alt="OS9 Works & Tech logo" className="h-10 w-10 object-contain rounded-md bg-white p-0.5 shadow-[0_0_10px_hsl(var(--glow)/0.4)]" />
           <span>OS9<span className="text-primary">HUB</span></span>
         </Link>
 
